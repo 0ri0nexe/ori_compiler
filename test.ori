@@ -1,1 +1,2 @@
-exit 12;
+let x = 7;
+exit(12);
