@@ -1,12 +1,37 @@
 #pragma once
 
 #include <vector>
+#include <variant>
 
 #include "tokenization.hpp"
 
+struct NodeExprIntLitteral {
+    Token int_lit;
+};
+
+struct NodeExprIdentifier {
+    Token identifier;
+};
 
 struct NodeExpr {
-    Token int_lit;
+    std::variant<NodeExprIntLitteral, NodeExprIdentifier> var;
+};
+
+struct NodeStatementExit {
+    NodeExpr expr;
+};
+
+struct NodeStatementLet {
+    Token indent;
+    NodeExpr expr;
+};
+
+struct NodeStatement {
+    std::variant<NodeStatementExit, NodeStatementLet> var;
+};
+
+struct NodeProgram {
+    std::vector<NodeStatement> var;
 };
 struct NodeExit {
     NodeExpr expr;
@@ -20,8 +45,10 @@ public:
     {}
 
     inline std::optional<NodeExpr> parse_expr() {
-        if (peek().has_value() && peek().value().type == TokenType::int_lit) {
-            return NodeExpr{consume()};
+        if (peek().has_value() && peek().value().type == TokenType::int_lit) { 
+            return NodeExpr{NodeExprIntLitteral{consume()}};
+        } else if (peek().has_value() && peek().value().type == TokenType::identifier){
+            return NodeExpr {NodeExprIdentifier{consume()}};
         } else {
             return {};
         }
@@ -30,7 +57,8 @@ public:
     inline std::optional<NodeExit> parse() {
         std::optional<NodeExit> exit_node;
         while (peek().has_value()) {
-            if (peek().value().type == TokenType::exit) {
+            if (peek().value().type == TokenType::exit && peek(1).has_value() && peek(1).value().type == TokenType::lparen) {
+                consume();
                 consume();
                 // the line below mean that if the method returns a value then node_expre will take true
                 // and the code will be executed, if not the else statement will be executed
@@ -40,10 +68,15 @@ public:
                     std::cerr << "Invalid expression" << std::endl;
                     exit(EXIT_FAILURE);
                 }
+                if (peek().has_value() && peek().value().type == TokenType::rparen) {
+                    consume();
+                } else {
+                    std::cerr << "Expected `)`" << std::endl;
+                }
                 if (peek().has_value() && peek().value().type == TokenType::semicolon) {
                     consume();
                 } else {
-                    std::cerr << "Invalid expression" << std::endl;
+                    std::cerr << "Expected `;`" << std::endl;
                     exit(EXIT_FAILURE);
                 }
             }
@@ -54,11 +87,11 @@ public:
 
 private:
 
-    [[nodiscard]] inline std::optional<Token> peek(int ahead = 1) const {
-        if (m_index + ahead > m_tokens.size()) {
+    [[nodiscard]] inline std::optional<Token> peek(int offset = 0) const {
+        if (m_index + offset >= m_tokens.size()) {
             return {};
         } else {
-            return m_tokens.at(m_index);
+            return m_tokens.at(m_index + offset);
         }
     }
 
