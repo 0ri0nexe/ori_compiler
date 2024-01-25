@@ -1,4 +1,4 @@
-$filePath = "F:\programmation\c\C++\projets\ori_compiler\out\out.exe"
+$filePath = "F:\programmation\projets\ori_compiler"
 
 # Vérifier si le fichier existe
 if (Test-Path $filePath) {
@@ -9,6 +9,6 @@ if (Test-Path $filePath) {
     Write-Output "Le fichier n'existe pas."
 }
 
-cd F:\programmation\c\C++\projets\ori_compiler\out\
+cd F:\programmation\projets\ori_compiler\out\
 nasm.exe -f win64 out.asm -o out.obj
 golink.exe out.obj /entry main /console kernel32.dll
