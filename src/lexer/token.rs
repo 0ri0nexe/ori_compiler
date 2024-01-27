@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub enum TokenKind {
     Int,
     Return,
@@ -11,15 +12,23 @@ pub enum TokenKind {
     Constant, // a constant like the 2 in `int 2`
 
     Identifier,
+    ToDetermine,
 }
 
-pub struct Token<'a> {
+#[derive(Debug)]
+pub struct Token {
     pub kind: TokenKind,
-    pub litteral: &'a str,
+    pub litteral: String,
 }
 
-impl<'a> Token<'a> {
-    fn new(kind:TokenKind, litteral:&'a str) -> Self {
-        Self{kind, litteral}
+impl Token {
+    pub fn new() -> Self {
+        Self{kind:TokenKind::ToDetermine, litteral:String::new()}
+    }
+    pub fn from_char(kind:TokenKind, litteral_char:&char) -> Self {
+        Self{kind, litteral:litteral_char.to_string()}
+    }
+    pub fn from_string(kind: TokenKind, litteral_string: String) -> Self {
+        Self{kind, litteral:litteral_string}
     }
 }

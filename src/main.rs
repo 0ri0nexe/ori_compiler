@@ -1,21 +1,24 @@
 mod lexer;
 
-use std::{env::{self}, fs::canonicalize, path::PathBuf, process::exit};
+use lexer::Lexer;
 
+use std::{fs, path::PathBuf};
+
+use clap::Parser;
+
+#[derive(Parser, Debug)]
 struct Cli {
     pattern: String,
     path: PathBuf,
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-
-    let args = Cli {
-        pattern: args[1],
-        path: PathBuf::from(args[2]), 
-    };
-
-    let file_path = canonicalize(&args[1]).unwrap();
-    dbg!(&file_path);
+    
+    let args = Cli::parse();
+    let content = fs::read_to_string(&args.path).expect("could not read the file");
+    let lexer = Lexer{};
+    let tokens = lexer.lex(content);
+    
+    dbg!(&tokens);
     
 }
