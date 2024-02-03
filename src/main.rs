@@ -1,6 +1,4 @@
-mod lexer;
-
-use lexer::Lexer;
+use ori::lexer::Lexer;
 
 use std::{fs, path::PathBuf};
 
@@ -16,8 +14,7 @@ fn main() {
     
     let args = Cli::parse();
     let content = fs::read_to_string(&args.path).expect("could not read the file");
-    let lexer = Lexer{};
-    let tokens = lexer.lex(content);
+    let tokens = Lexer::lex(content);
     
     dbg!(&tokens);
     

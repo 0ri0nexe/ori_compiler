@@ -1,13 +1,13 @@
+pub mod token;
+
 use std::iter::Peekable;
 
 use self::token::{Token, TokenKind};
 
-mod token;
-
 pub struct Lexer {}
 
 impl Lexer {
-    pub fn lex(&self, file: String) -> Vec<Token> {
+    pub fn lex(file: String) -> Vec<Token> {
         let mut tokens = Vec::new();
         let mut file_iter = file.chars().peekable();
         while file_iter.peek().is_some() {
