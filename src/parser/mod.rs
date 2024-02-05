@@ -1,5 +1,7 @@
 use std::iter::Peekable;
 
+use crate::lexer::token;
+
 use super::lexer::token::{Token, TokenKind};
 
 pub trait Parsed<'a> {
@@ -52,6 +54,7 @@ impl Function {
                 panic!("function return type is wrong")
             }
         }
+        
         if tokens.peek().is_some() && tokens.peek().unwrap().kind == TokenKind::Identifier {
             function.name = tokens.next().unwrap().litteral.clone();
         } else {

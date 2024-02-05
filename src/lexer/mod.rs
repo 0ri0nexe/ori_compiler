@@ -43,16 +43,19 @@ impl Lexer {
             if iter.peek().unwrap().is_alphanumeric() || *iter.peek().unwrap() == '_' {
                 let current_char = iter.next().unwrap();
                 current_token.litteral.push(current_char);
-                match current_token.litteral.as_str() {
-                    "int" => {
-                        current_token.kind = TokenKind::Int;
-                        return;
+                
+                if iter.peek().is_none() || iter.peek().unwrap().is_whitespace() {
+                    match current_token.litteral.as_str() {
+                        "int" => {
+                            current_token.kind = TokenKind::Int;
+                            return;
+                        }
+                        "return" => {
+                            current_token.kind = TokenKind::Return;
+                            return;
+                        }
+                        _ => {}
                     }
-                    "return" => {
-                        current_token.kind = TokenKind::Return;
-                        return;
-                    }
-                    _ => {}
                 }
             } else {
                 current_token.kind = TokenKind::Identifier;

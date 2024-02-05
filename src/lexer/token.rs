@@ -3,6 +3,7 @@ pub enum TokenKind {
     Int,
     Return,
     
+    Space,
     OpenParen,
     CloseParen,
     OpenBrace,

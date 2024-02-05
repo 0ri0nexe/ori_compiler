@@ -1,4 +1,8 @@
-use ori::lexer::Lexer;
+use ori::{
+    generator::Generator,
+    lexer::Lexer,
+    parser::{Parsed, Program},
+};
 
 use std::{fs, path::PathBuf};
 
@@ -11,11 +15,9 @@ struct Cli {
 }
 
 fn main() {
-    
     let args = Cli::parse();
     let content = fs::read_to_string(&args.path).expect("could not read the file");
     let tokens = Lexer::lex(content);
-    
-    dbg!(&tokens);
-    
+    let prog = Program::parse(&mut tokens.iter().peekable());
+    Generator::generate(prog);
 }
